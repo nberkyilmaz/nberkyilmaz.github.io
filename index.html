@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Berk Yilmaz</title>
+    <meta name="description" content="Berk Yilmaz, software developer in Toronto and private pilot. Projects: Departure Brief and Hours to Go." />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href="https://nberkyilmaz.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Berk Yilmaz" />
+    <meta property="og:description" content="Software developer in Toronto and private pilot." />
+    <meta property="og:url" content="https://nberkyilmaz.com/" />
+    <style>
+      :root {
+        --bg: #fafaf8;
+        --surface: #ffffff;
+        --fg: #1a1a1d;
+        --muted: #5c5c66;
+        --line: #e2e2dc;
+        --accent: #1c62b5;
+        --radius: 10px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --bg: #111114;
+          --surface: #1a1a1f;
+          --fg: #ececf0;
+          --muted: #a0a0ab;
+          --line: #2c2c33;
+          --accent: #6ea8f0;
+        }
+      }
+      :root[data-theme='dark'] {
+        --bg: #111114;
+        --surface: #1a1a1f;
+        --fg: #ececf0;
+        --muted: #a0a0ab;
+        --line: #2c2c33;
+        --accent: #6ea8f0;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font: 16px/1.6 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      }
+      main { max-width: 42rem; margin: 0 auto; padding: 4rem 1rem 3rem; }
+      h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 0.5rem; letter-spacing: -0.01em; }
+      .lede { color: var(--muted); font-size: 1.1rem; margin: 0 0 2.5rem; }
+      h2 {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin: 0 0 1rem;
+      }
+      a { color: var(--accent); }
+      a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+      .projects { display: grid; gap: 1rem; margin: 0 0 3rem; padding: 0; list-style: none; }
+      .project {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.25rem 1rem;
+      }
+      .project h3 { margin: 0 0 0.35rem; font-size: 1.15rem; }
+      .project p { margin: 0 0 0.75rem; }
+      .stack { color: var(--muted); font-size: 0.85rem; margin: 0 0 0.75rem; }
+      .links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; font-size: 0.95rem; }
+      .links a { font-weight: 500; text-decoration: none; }
+      .links a:hover { text-decoration: underline; }
+
+      footer { border-top: 1px solid var(--line); padding-top: 1.25rem; }
+      footer .links a { color: var(--fg); }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Berk Yilmaz</h1>
+        <p class="lede">Software developer in Toronto and private pilot. I build the tools I want before a flight.</p>
+      </header>
+
+      <section aria-labelledby="projects">
+        <h2 id="projects">Projects</h2>
+        <ul class="projects">
+          <li class="project">
+            <h3>Departure Brief</h3>
+            <p>
+              A pre-flight briefing for VFR pilots. It decodes METARs, TAFs and NOTAMs, works out which forecast applies at each point of the route at the
+              time you will be there, and checks it against your own minimums, citing the report behind every line.
+            </p>
+            <p class="stack">TypeScript · React · Cloudflare Workers · Fastify · PostgreSQL</p>
+            <div class="links">
+              <a href="/departure-brief/">Open it</a>
+              <a href="https://github.com/nberkyilmaz/departure-brief">Source</a>
+            </div>
+          </li>
+          <li class="project">
+            <h3>Hours to Go</h3>
+            <p>
+              A pilot logbook that shows what is left for each Transport Canada licence and rating, and the paragraph of the standard behind every
+              requirement.
+            </p>
+            <p class="stack">TypeScript · React · Fastify · PostgreSQL</p>
+            <div class="links">
+              <!-- Put back <a href="/hours-to-go/">Open it</a> once the app is deployed there; until then it is a 404. -->
+              <a href="https://github.com/nberkyilmaz/hours-to-go">Source</a>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <footer>
+        <div class="links">
+          <a href="mailto:contact@nberkyilmaz.com">contact@nberkyilmaz.com</a>
+          <a href="https://github.com/nberkyilmaz">GitHub</a>
+          <a href="https://linkedin.com/in/nberkyilmaz">LinkedIn</a>
+        </div>
+      </footer>
+    </main>
+  </body>
+</html>
