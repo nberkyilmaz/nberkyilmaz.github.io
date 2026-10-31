@@ -19,4 +19,22 @@ The domain is set in this repository's Settings → Pages. DNS is at Cloudflare:
 records on the apex pointing at GitHub Pages, `www` as a CNAME to `nberkyilmaz.github.io`, all DNS
 only. The MX and TXT records on the apex are the domain's email and are separate.
 
-This page is a placeholder for a fuller portfolio: plain HTML, no build step.
+The page is plain HTML with no build step.
+
+## The résumé
+
+`resume.pdf`, served at <https://nberkyilmaz.com/resume.pdf>, is a copy of `out/resume.pdf` from the
+private `resume` repository: the build of `resume.tex`, which has no phone number. Copy it again
+whenever the résumé changes. Never copy `Berk_Yilmaz_Resume.pdf`, the version for applying, which
+has the phone number.
+
+## The live METAR
+
+The hero shows Toronto Island's latest METAR, read from
+[Departure Brief's relay](https://github.com/nberkyilmaz/departure-brief/tree/master/apps/relay)
+at `/awc/metar?ids=CYTZ&format=json`. The relay only answers pages on its `ALLOWED_ORIGINS` list,
+which includes `https://nberkyilmaz.com`. If the relay doesn't answer, or the report is more than
+three hours old, the card is removed and the hero looks as it would without it.
+
+Every number on the page comes from the résumé repository's `achievements.md`, where each one is
+traced to its source. Clients stay unnamed.

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Berk Yilmaz</title>
-    <meta name="description" content="Berk Yilmaz, software developer in Toronto and private pilot. Projects: Departure Brief and Hours to Go." />
+    <meta name="description" content="Berk Yilmaz, software developer in Toronto: load testing and performance engineering for provincial assessment platforms. Private pilot, and the builder of Departure Brief and Hours to Go." />
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#081a35" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -16,6 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script>document.documentElement.classList.add('js');</script>
     <style>
       :root {
         --bg: #faf7f2;
@@ -200,6 +201,11 @@
         color: rgba(255, 255, 255, 0.85);
       }
       .topbar nav a:hover { color: #fff; background: rgba(255, 255, 255, 0.12); }
+      .topbar nav .nav-cta { color: #fff; border: 1px solid rgba(255, 255, 255, 0.45); }
+      /* Five links don't fit beside the mark on a phone; these two are a short scroll away. */
+      @media (max-width: 560px) {
+        .topbar nav .nav-wide { display: none; }
+      }
 
       .hero-inner { position: relative; z-index: 1; padding-top: clamp(3.5rem, 9vw, 6.5rem); padding-bottom: clamp(7rem, 15vw, 11rem); }
       .hero-kicker {
@@ -226,6 +232,50 @@
         color: rgba(255, 255, 255, 0.9);
       }
       .cta { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+      /* Live METAR from Toronto Island. Hidden without script; its room is held while it loads so nothing below jumps. */
+      .wx { display: none; }
+      .js .wx {
+        display: block;
+        max-width: 34rem;
+        margin-top: 2rem;
+        padding: 0.9rem 1.1rem 1rem;
+        border-radius: 14px;
+        background: rgba(8, 26, 53, 0.62);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+        font-size: 0.88rem;
+      }
+      .wx-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.6rem; color: rgba(255, 255, 255, 0.8); }
+      .wx-head strong { color: #fff; }
+      .wx-live { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 800; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: #3ccf7f; }
+      .wx-live::before { content: ''; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: currentColor; }
+      @media (prefers-reduced-motion: no-preference) {
+        .wx-live::before { animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 50% { opacity: 0.35; } }
+      }
+      .wx-cat:not(:empty) { padding: 0.05rem 0.5rem; border-radius: 6px; font-weight: 800; font-size: 0.75rem; letter-spacing: 0.06em; color: var(--night); background: #fff; }
+      .wx-cat[data-cat='VFR'] { background: #3ccf7f; }
+      .wx-cat[data-cat='MVFR'] { background: #62b6f2; }
+      .wx-cat[data-cat='IFR'] { background: #ff7b72; }
+      .wx-cat[data-cat='LIFR'] { background: #e48cf5; }
+      .wx-age { margin-left: auto; font-size: 0.8rem; }
+      .wx-raw {
+        min-height: 2.9em;
+        margin: 0.55rem 0 0.4rem;
+        font: 600 0.82rem/1.45 ui-monospace, 'Cascadia Mono', Consolas, monospace;
+        letter-spacing: 0.02em;
+        color: #fff;
+        overflow-wrap: anywhere;
+      }
+      .wx-plain { margin: 0; color: rgba(255, 255, 255, 0.8); }
+      .wx-plain a { color: var(--sun); font-weight: 700; text-decoration: none; white-space: nowrap; }
+      .wx-plain a:hover { text-decoration: underline; }
+      /* On a wide screen the route starts behind the card, which then stands in for the CYTZ waypoint. */
+      @media (min-width: 761px) {
+        .has-wx .route .wpt, .has-wx .route .wpt-dot, .has-wx .route .lbl { display: none; }
+      }
       /* Room under the buttons for the route and the sun, which sit below the text on a phone. */
       @media (max-width: 760px) {
         .hero-inner { padding-bottom: 11rem; }
@@ -250,6 +300,77 @@
         font-weight: 800;
       }
       .section-lede { margin: 0.6rem 0 2rem; color: var(--muted); max-width: 38rem; }
+
+      /* By the numbers: a card that sits on the hills, under the hero */
+      .numbers {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        margin: clamp(-4rem, -6vw, -2.5rem) 0 0;
+        padding: 0;
+        list-style: none;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      @media (min-width: 860px) { .numbers { grid-template-columns: repeat(4, 1fr); } }
+      .numbers li { padding: 1.2rem 1.25rem 1.3rem; border-top: 1px solid var(--line); border-left: 1px solid var(--line); margin: -1px 0 0 -1px; }
+      .numbers strong { display: block; font-size: clamp(1.9rem, 4.5vw, 2.6rem); line-height: 1.05; letter-spacing: -0.03em; font-weight: 800; color: var(--accent); }
+      .numbers span { display: block; margin-top: 0.35rem; font-size: 0.88rem; line-height: 1.4; color: var(--muted); }
+
+      /* Selected work: the stories behind the numbers */
+      .cases { display: grid; gap: 1.25rem; }
+      @media (min-width: 860px) { .cases { grid-template-columns: 1fr 1fr; gap: 1.5rem; } }
+      .case {
+        position: relative;
+        padding: 1.5rem 1.4rem 1.4rem;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .case::before {
+        content: '';
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 4px;
+        background: linear-gradient(90deg, #14396b, #4b4a8f, #c8643f, #f0a057);
+      }
+      .case .case-num { margin: 0; font-size: 2.1rem; line-height: 1; letter-spacing: -0.03em; font-weight: 800; color: var(--accent); }
+      .case-num small { margin-left: 0.4rem; font-size: 0.9rem; letter-spacing: 0; font-weight: 700; color: var(--muted); }
+      .case h3 { margin: 0.75rem 0 0.5rem; font-size: 1.25rem; letter-spacing: -0.015em; font-weight: 800; }
+      .case p { margin: 0 0 0.75rem; color: var(--muted); }
+      .case .result { margin: 0; color: var(--ink); font-weight: 600; }
+
+      /* Experience: dates on the left; hovering one role fades the others */
+      .timeline { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+      .job { display: grid; gap: 0.35rem 1.5rem; padding: 1.1rem 0; border-radius: 14px; transition: opacity 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease; }
+      @media (min-width: 640px) { .job { grid-template-columns: 9.5rem 1fr; } }
+      @media (hover: hover) and (min-width: 860px) {
+        .job { padding: 1.1rem 1.25rem; margin: 0 -1.25rem; }
+        .timeline:has(.job:hover) .job:not(:hover) { opacity: 0.5; }
+        .job:hover { background: var(--surface); box-shadow: var(--shadow); }
+      }
+      .job .when { margin: 0.2rem 0 0; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+      .job h3 { margin: 0 0 0.4rem; font-size: 1.1rem; line-height: 1.35; font-weight: 800; }
+      .job h3 a { text-decoration: none; }
+      .job h3 a:hover { color: var(--accent); }
+      .job h3 .org { color: var(--muted); font-weight: 700; }
+      .job p { margin: 0 0 0.8rem; color: var(--muted); }
+      .more { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 1.25rem; font-weight: 700; color: var(--accent); text-decoration: none; }
+      .more:hover { text-decoration: underline; }
+
+      /* Now */
+      .now { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; max-width: 46rem; }
+      .now li { display: grid; gap: 0.15rem 1.5rem; padding: 0.9rem 0; border-top: 1px solid var(--line); }
+      .now li:last-child { border-bottom: 1px solid var(--line); }
+      @media (min-width: 640px) { .now li { grid-template-columns: 7rem 1fr; } }
+      .now strong { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding-top: 0.2rem; }
+      .now span { color: var(--ink); }
 
       /* Project cards */
       .projects { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
@@ -400,9 +521,11 @@
       <div class="wrap topbar">
         <a class="mark" href="/" aria-label="Berk Yilmaz, home">BY</a>
         <nav aria-label="Sections">
+          <a href="#work">Work</a>
+          <a class="nav-wide" href="#experience">Experience</a>
           <a href="#projects">Projects</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
+          <a class="nav-wide" href="#about">About</a>
+          <a class="nav-cta" href="/resume.pdf">Résumé</a>
         </nav>
       </div>
 
@@ -411,16 +534,143 @@
         <h1>Berk Yilmaz</h1>
         <p class="lede">I keep exam platforms fast when thousands of students log in at once, and I build the tools for my flight training.</p>
         <div class="cta">
-          <a class="btn btn-sun" href="#projects">See my projects</a>
+          <a class="btn btn-sun" href="/resume.pdf">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5M9 13h6M9 17h6" /></svg>
+            Résumé (PDF)
+          </a>
           <a class="btn btn-glass" href="mailto:contact@nberkyilmaz.com">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>
             Email me
           </a>
         </div>
+
+        <div class="wx" id="wx" role="group" aria-label="Weather at Toronto Island airport right now">
+          <div class="wx-head">
+            <span class="wx-live">Live</span>
+            <span><strong>Toronto Island</strong> · CYTZ</span>
+            <span class="wx-cat" data-wx="cat"></span>
+            <span class="wx-age" data-wx="age">Fetching the latest report…</span>
+          </div>
+          <p class="wx-raw" data-wx="raw"></p>
+          <p class="wx-plain"><span data-wx="plain"></span> <a href="/departure-brief/">Brief a flight in Departure Brief →</a></p>
+        </div>
       </div>
     </header>
 
     <main>
+      <div class="wrap">
+        <ul class="numbers" aria-label="By the numbers">
+          <li><strong>107×</strong><span>faster ministry data export: 12.8 hours to 7.2 minutes</span></li>
+          <li><strong>8,041</strong><span>students online at once in a load test, with zero server errors</span></li>
+          <li><strong>6</strong><span>Canadian jurisdictions whose exam platforms I load test</span></li>
+          <li><strong>50×</strong><span>less alert noise: 3,253 production alerts traced to 65 bugs</span></li>
+        </ul>
+      </div>
+
+      <section id="work" class="section wrap" aria-labelledby="work-title">
+        <p class="kicker">Selected work</p>
+        <h2 id="work-title">Finding out why it's slow, and proving it</h2>
+        <p class="section-lede">
+          At Vretta I lead load testing for the platforms provinces run their exams on, from production traffic analysis to the report the client
+          signs off. Four pieces of that work, with the numbers behind them.
+        </p>
+
+        <div class="cases">
+          <article class="case" id="export">
+            <p class="case-num">107×<small>faster</small></p>
+            <h3>The 12.8-hour export</h3>
+            <p>
+              A ministry data export took 12.8 hours at province scale. Rather than pay for another run, I rebuilt the one that had already
+              happened from 229,530 S3 object timestamps, and found one cross-region S3 write per student, to a bucket nothing read.
+            </p>
+            <p class="result">Removing it took the export to 7.2 minutes, and the cost per row fell 99×.</p>
+          </article>
+
+          <article class="case" id="sizing">
+            <p class="case-num">2 sizes<small>smaller database</small></p>
+            <h3>Right-sizing a production database</h3>
+            <p>
+              The plan called for an 8xlarge database. Under three times production load, the 4xlarge peaked at 25.8% CPU, while the API tier
+              the plan held flat would have run near 50%. The earlier 8xlarge figure turned out to come from a cold-cache measurement.
+            </p>
+            <p class="result">I recommended the smaller database and moving the spend to the API tier. Management approved it.</p>
+          </article>
+
+          <article class="case" id="alerts">
+            <p class="case-num">50×<small>less alert noise</small></p>
+            <h3>3,253 alerts, 65 bugs</h3>
+            <p>
+              Production errors arrived as a flood of duplicate alerts. I built a serverless pipeline: a Lambda reads load-balancer logs as they
+              land in S3, joins each failed request to its stack trace by X-Ray trace ID through Athena, and fingerprints it in DynamoDB.
+            </p>
+            <p class="result">Each real bug now opens one GitLab issue, across 11 tenants in 2 regions under data-residency rules.</p>
+          </article>
+
+          <article class="case" id="method">
+            <p class="case-num">92.3%<small>of real traffic reproduced</small></p>
+            <h3>Load tests that match production</h3>
+            <p>
+              A load test is only as good as the traffic it sends. Mine start from a measured production peak hour, modelled endpoint by
+              endpoint, which took coverage of real traffic from 39.9% to 92.3%.
+            </p>
+            <p class="result">Every number I report is reconciled against the load balancer: across 9.23 million requests in one test, k6 and the load balancer differed by 19 requests, each one explained.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="experience" class="section wrap" aria-labelledby="experience-title">
+        <p class="kicker">Experience</p>
+        <h2 id="experience-title">Where I've worked</h2>
+        <p class="section-lede">Performance, security and observability work on platforms where a slow minute is a student's exam.</p>
+
+        <ol class="timeline">
+          <li class="job">
+            <p class="when">Dec 2024 – Present</p>
+            <div>
+              <h3><a href="https://www.vretta.com/">Software Developer <span class="org">· Vretta ↗</span></a></h3>
+              <p>
+                Online assessment platforms for provincial ministries. I lead load testing across 6 Canadian jurisdictions, built the
+                error-alerting pipeline, and closed privilege-escalation gaps in a provincial admin portal as its sole developer.
+              </p>
+              <ul class="chips" aria-label="Worked with">
+                <li>k6</li>
+                <li>AWS EKS</li>
+                <li>Lambda</li>
+                <li>Athena</li>
+                <li>DynamoDB</li>
+                <li>CloudWatch</li>
+                <li>Node.js</li>
+                <li>Angular</li>
+                <li>GitLab CI</li>
+              </ul>
+            </div>
+          </li>
+          <li class="job">
+            <p class="when">May – Dec 2024</p>
+            <div>
+              <h3>Full-Stack Web Developer <span class="org">· Expense Trend (contract)</span></h3>
+              <p>
+                Replaced a manual configuration process with a documented REST API, and designed the schema and persistence layer for synced
+                bank accounts, institutions and credentials.
+              </p>
+              <ul class="chips" aria-label="Worked with">
+                <li>Node.js</li>
+                <li>OpenAPI</li>
+                <li>MSSQL</li>
+              </ul>
+            </div>
+          </li>
+          <li class="job">
+            <p class="when">2020 – 2024</p>
+            <div>
+              <h3>Honours BSc, Computer Science <span class="org">· Wilfrid Laurier University</span></h3>
+              <p>Data structures and algorithms, databases, operating systems, machine learning and software engineering.</p>
+            </div>
+          </li>
+        </ol>
+        <a class="more" href="/resume.pdf">View the full résumé <span aria-hidden="true">→</span></a>
+      </section>
+
       <section id="projects" class="section wrap" aria-labelledby="projects-title">
         <p class="kicker">Projects</p>
         <h2 id="projects-title">Two apps for pilots, both live</h2>
@@ -524,6 +774,18 @@
           </ul>
         </div>
       </section>
+
+      <section id="now" class="section wrap" aria-labelledby="now-title">
+        <p class="kicker">Now · October 2026</p>
+        <h2 id="now-title">What I'm working on</h2>
+        <p class="section-lede">Updated every month or so.</p>
+        <ul class="now">
+          <li><strong>Work</strong><span>Load testing and performance engineering for provincial assessment platforms at Vretta.</span></li>
+          <li><strong>Studying</strong><span>AWS Certified Solutions Architect – Associate.</span></li>
+          <li><strong>Building</strong><span>Departure Brief: moving the live page from sample data to live weather, with a map of every station.</span></li>
+          <li><strong>Flying</strong><span>A Cessna 172 out of Toronto, whenever the METAR at the top of this page allows.</span></li>
+        </ul>
+      </section>
     </main>
 
     <footer id="contact" class="contact">
@@ -535,6 +797,10 @@
           <a class="btn btn-sun" href="mailto:contact@nberkyilmaz.com">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>
             contact@nberkyilmaz.com
+          </a>
+          <a class="btn btn-glass" href="/resume.pdf">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5M9 13h6M9 17h6" /></svg>
+            Résumé
           </a>
           <a class="btn btn-glass" href="https://github.com/nberkyilmaz">
             <svg class="icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z" /></svg>
@@ -548,5 +814,48 @@
         <p class="fine">© 2026 Berk Yilmaz</p>
       </div>
     </footer>
+
+    <script>
+      // Toronto Island's latest METAR, through Departure Brief's relay. If it doesn't answer, or the report
+      // is more than three hours old, the card goes away and the hero reads as it would without it.
+      (() => {
+        const RELAY = 'https://depbrief-relay.depbrief-relay.workers.dev';
+        const card = document.getElementById('wx');
+        const field = (name) => card.querySelector(`[data-wx="${name}"]`);
+        const fail = () => card.remove();
+
+        fetch(`${RELAY}/awc/metar?ids=CYTZ&format=json`)
+          .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`relay answered ${res.status}`))))
+          .then(([m]) => {
+            const observed = Date.parse(m?.reportTime);
+            const minutes = Math.round((Date.now() - observed) / 60000);
+            if (!m?.rawOb || !(minutes < 180)) return fail();
+
+            const ago = minutes < 1 ? 'just now' : minutes < 60 ? `${minutes} min ago` : `${Math.floor(minutes / 60)} h ${minutes % 60} min ago`;
+            field('age').textContent = `${new Date(observed).toISOString().slice(11, 16)}Z · ${ago}`;
+            field('raw').textContent = m.rawOb;
+            if (/^(L?IFR|M?VFR)$/.test(m.fltCat)) {
+              field('cat').textContent = m.fltCat;
+              field('cat').dataset.cat = m.fltCat;
+            }
+
+            const wind =
+              m.wspd === 0
+                ? 'Calm'
+                : `Wind ${m.wdir === 'VRB' ? 'variable' : `${String(m.wdir).padStart(3, '0')}°`} at ${m.wspd} kt${m.wgst ? `, gusting ${m.wgst}` : ''}`;
+            const ceiling = (m.clouds ?? []).find((c) => c.cover === 'BKN' || c.cover === 'OVC');
+            field('plain').textContent = [
+              wind,
+              m.visib != null && `${m.visib} SM`,
+              ceiling ? `ceiling ${ceiling.base.toLocaleString('en-CA')} ft` : 'no ceiling',
+              m.temp != null && `${m.temp} °C`,
+            ]
+              .filter(Boolean)
+              .join(' · ') + '.';
+            document.querySelector('.hero').classList.add('has-wx');
+          })
+          .catch(fail);
+      })();
+    </script>
   </body>
 </html>
