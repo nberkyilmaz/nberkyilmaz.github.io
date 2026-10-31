@@ -36,5 +36,18 @@ at `/awc/metar?ids=CYTZ&format=json`. The relay only answers pages on its `ALLOW
 which includes `https://nberkyilmaz.com`. If the relay doesn't answer, or the report is more than
 three hours old, the card is removed and the hero looks as it would without it.
 
+## The sky
+
+The hero's sky follows the sun over Toronto, worked out in the browser from the time: night, dawn or
+dusk, sunrise or sunset, or day. The METAR adds its cloud layers, drifting with the reported wind,
+and the card says what's drawn. Without JavaScript the sky is the sunset.
+
+## Link previews
+
+`assets/og.jpg` is what LinkedIn, Slack and messages show for a link to the site: a 1200×630
+screenshot of a page drawn in the hero's style. Make it again if the name or the role line changes.
+
+`404.html` is the page GitHub Pages serves for any address on the domain that doesn't exist.
+
 Every number on the page comes from the résumé repository's `achievements.md`, where each one is
 traced to its source. Clients stay unnamed.

@@ -3,20 +3,68 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Berk Yilmaz</title>
+    <title>Berk Yilmaz · Software developer, performance and load testing</title>
     <meta name="description" content="Berk Yilmaz, software developer in Toronto: load testing and performance engineering for provincial assessment platforms. Private pilot, and the builder of Departure Brief and Hours to Go." />
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#081a35" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href="https://nberkyilmaz.com/" />
+    <!-- What a link to this page shows when it's pasted into LinkedIn, Slack or a message. -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Berk Yilmaz" />
-    <meta property="og:description" content="Software developer in Toronto and private pilot." />
+    <meta property="og:site_name" content="Berk Yilmaz" />
+    <meta property="og:title" content="Berk Yilmaz · Software developer, performance and load testing" />
+    <meta property="og:description" content="Software developer in Toronto. I keep exam platforms fast when thousands of students log in at once, and I build tools for flying." />
     <meta property="og:url" content="https://nberkyilmaz.com/" />
+    <meta property="og:image" content="https://nberkyilmaz.com/assets/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Berk Yilmaz, software developer: performance and load testing. A sunset over hills, with a plane climbing out of Toronto Island." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Berk Yilmaz",
+        "url": "https://nberkyilmaz.com/",
+        "jobTitle": "Software Developer",
+        "worksFor": { "@type": "Organization", "name": "Vretta", "url": "https://www.vretta.com/" },
+        "alumniOf": { "@type": "CollegeOrUniversity", "name": "Wilfrid Laurier University" },
+        "address": { "@type": "PostalAddress", "addressLocality": "Toronto", "addressRegion": "ON", "addressCountry": "CA" },
+        "email": "mailto:contact@nberkyilmaz.com",
+        "knowsAbout": ["Load testing", "Performance engineering", "k6", "Amazon Web Services", "Observability"],
+        "sameAs": ["https://github.com/nberkyilmaz", "https://www.linkedin.com/in/nberkyilmaz"]
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <script>document.documentElement.classList.add('js');</script>
+    <script>
+      document.documentElement.classList.add('js');
+
+      // The hero's sky follows the sun over Toronto: night, dawn or dusk, sunrise or sunset, or day. It's set
+      // here, before the page paints, so the sunset in the CSS never flashes first. Without script it stays a sunset.
+      (() => {
+        const rad = Math.PI / 180;
+        const lat = 43.65 * rad;
+        const lon = -79.38;
+        const d = Date.now() / 86400000 - 10957.5; // days since noon UTC on 1 January 2000
+        const anomaly = (357.529 + 0.98560028 * d) * rad;
+        const longitude = (280.459 + 0.98564736 * d + 1.915 * Math.sin(anomaly) + 0.02 * Math.sin(2 * anomaly)) * rad;
+        const tilt = (23.439 - 0.00000036 * d) * rad;
+        const ra = Math.atan2(Math.cos(tilt) * Math.sin(longitude), Math.cos(longitude));
+        const dec = Math.asin(Math.sin(tilt) * Math.sin(longitude));
+        const hourAngle = (280.46061837 + 360.98564736629 * d + lon) * rad - ra;
+        const alt = Math.asin(Math.sin(lat) * Math.sin(dec) + Math.cos(lat) * Math.cos(dec) * Math.cos(hourAngle)) / rad;
+        const morning = Math.sin(hourAngle) < 0;
+
+        const sky = alt < -10 ? 'night' : alt < -2 ? 'twilight' : alt < 6 ? 'golden' : 'day';
+        const root = document.documentElement;
+        root.dataset.sky = sky;
+        root.dataset.skyLabel = { night: 'night', twilight: morning ? 'dawn' : 'dusk', golden: morning ? 'sunrise' : 'sunset', day: 'daytime' }[sky];
+        // How high the daytime sun sits, from just above the hills (0) to the top of its climb (1).
+        root.style.setProperty('--sun-up', Math.min(1, Math.max(0, (alt - 6) / 50)).toFixed(2));
+      })();
+    </script>
     <style>
       :root {
         --bg: #faf7f2;
@@ -178,7 +226,124 @@
         .sun { width: 96px; right: 9%; bottom: 40px; }
       }
 
-      .topbar { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding-top: 1.25rem; }
+      /* The sky over Toronto right now, set by the script in <head>. The sunset above is sunrise and sunset, and
+         what shows without script. Every sky stays dark enough behind the words for white text. */
+      .hero { --cloud: #f4bfae; --cloud-o: 0.62; --veil: rgba(62, 52, 92, 0.5); }
+      [data-sky='day'] .hero {
+        --cloud: #ffffff;
+        --cloud-o: 0.85;
+        --veil: rgba(62, 78, 104, 0.62);
+        background:
+          radial-gradient(80% 50% at 78% 100%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 60%),
+          linear-gradient(180deg, #0b3a73 0%, #1b5aa0 40%, #3a80c6 72%, #84bce8 100%);
+      }
+      [data-sky='day'] .hero::before { opacity: 0; }
+      [data-sky='day'] .sun {
+        width: clamp(90px, 11vw, 150px);
+        bottom: calc(clamp(30px, 5vw, 70px) + var(--sun-up, 0) * 36%);
+        background: radial-gradient(circle at 50% 45%, #ffffff 0%, #fff4c4 55%, #ffdc80 100%);
+        box-shadow: 0 0 90px 40px rgba(255, 240, 190, 0.6);
+      }
+      @media (max-width: 760px) {
+        [data-sky='day'] .sun { width: 78px; bottom: calc(40px + var(--sun-up, 0) * 56px); }
+      }
+      [data-sky='twilight'] .hero {
+        --cloud: #a08cbd;
+        --cloud-o: 0.5;
+        --veil: rgba(28, 28, 58, 0.5);
+        background:
+          radial-gradient(85% 45% at 78% 100%, rgba(255, 150, 120, 0.5) 0%, rgba(255, 130, 110, 0) 65%),
+          linear-gradient(180deg, #071630 0%, #10285a 40%, #3b3f80 72%, #8c5a86 100%);
+      }
+      [data-sky='twilight'] .hero::before { inset: 0 0 45% 0; opacity: 0.55; }
+      [data-sky='night'] .hero {
+        --cloud: #3b4b70;
+        --cloud-o: 0.6;
+        --veil: rgba(6, 12, 26, 0.5);
+        /* The glow low on the horizon is the city's. */
+        background:
+          radial-gradient(90% 35% at 50% 100%, rgba(255, 160, 110, 0.2) 0%, rgba(255, 160, 110, 0) 70%),
+          linear-gradient(180deg, #040b1a 0%, #081a35 45%, #102a52 85%, #1d3561 100%);
+      }
+      /* Twice the stars at night. They stay in ::before, which paints first, so cloud passes in front of them. */
+      [data-sky='night'] .hero::before {
+        inset: 0 0 30% 0;
+        opacity: 1;
+        background-image:
+          radial-gradient(1.5px 1.5px at 8% 22%, #fff 50%, transparent 51%),
+          radial-gradient(1px 1px at 18% 60%, #fff 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 31% 14%, #fff 50%, transparent 51%),
+          radial-gradient(1px 1px at 44% 40%, #fff 50%, transparent 51%),
+          radial-gradient(2px 2px at 57% 18%, #fff 50%, transparent 51%),
+          radial-gradient(1px 1px at 66% 52%, #fff 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 74% 10%, #fff 50%, transparent 51%),
+          radial-gradient(1px 1px at 86% 34%, #fff 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 94% 16%, #fff 50%, transparent 51%),
+          radial-gradient(1px 1px at 4% 48%, #fff 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 13% 8%, #fff 50%, transparent 51%),
+          radial-gradient(1px 1px at 24% 34%, #fff 50%, transparent 51%),
+          radial-gradient(1px 1px at 37% 62%, #fff 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 49% 27%, #fff 50%, transparent 51%),
+          radial-gradient(1px 1px at 61% 6%, #fff 50%, transparent 51%),
+          radial-gradient(1px 1px at 70% 41%, #fff 50%, transparent 51%),
+          radial-gradient(2px 2px at 81% 22%, #fff 50%, transparent 51%),
+          radial-gradient(1px 1px at 90% 57%, #fff 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 97% 38%, #fff 50%, transparent 51%);
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        [data-sky='night'] .hero::before { animation: twinkle 5s ease-in-out infinite alternate; }
+        @keyframes twinkle { to { opacity: 0.55; } }
+      }
+      [data-sky='twilight'] .sun, [data-sky='night'] .sun { display: none; }
+
+      /* Cloud from the METAR, a layer for each layer reported, drifting with the reported wind. Faint behind the
+         words and full over the sun and the route, so the text stays readable under any of it. */
+      .clouds { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 1.5s ease; }
+      .clouds.shown { opacity: 1; }
+      @media (min-width: 761px) {
+        .clouds { -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 38%, #000 62%); mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 38%, #000 62%); }
+      }
+      @media (max-width: 760px) {
+        .clouds { -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 58%, #000 75%); mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 58%, #000 75%); }
+      }
+      .clouds.overcast::before { content: ''; position: absolute; inset: 0; background: var(--veil); }
+      .cloud {
+        position: absolute;
+        top: var(--y);
+        left: var(--left);
+        width: calc(var(--s) * 11rem);
+        height: calc(var(--s) * 2.6rem);
+        border-radius: 999px;
+        background: var(--cloud);
+        /* On the whole cloud, not each puff, so the puffs don't show where they overlap. */
+        opacity: var(--cloud-o);
+      }
+      .cloud::before, .cloud::after { content: ''; position: absolute; bottom: 35%; aspect-ratio: 1; border-radius: 50%; background: inherit; }
+      .cloud::before { left: 14%; width: 44%; }
+      .cloud::after { left: 50%; width: 32%; }
+      @media (prefers-reduced-motion: no-preference) {
+        .clouds.drift .cloud { left: 0; animation: drift var(--dur) linear var(--delay) infinite; }
+        .clouds.drift.from-east .cloud { animation-direction: reverse; }
+        @keyframes drift { from { transform: translateX(-14rem); } to { transform: translateX(100vw); } }
+      }
+      .hero:has(.clouds.broken) .sun { opacity: 0.8; }
+      .hero:has(.clouds.overcast) .sun { display: none; }
+
+      /* The nav sits over the hero, then follows down the page on a strip of night sky, so the résumé is always
+         one click away. Without script it stays at the top of the hero. */
+      .navbar { position: absolute; top: 0; left: 0; right: 0; z-index: 20; color: #fff; }
+      .js .navbar { position: fixed; transition: background-color 0.25s ease, box-shadow 0.25s ease; }
+      .navbar.solid {
+        background: rgba(8, 26, 53, 0.94);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 8px 24px rgba(0, 0, 0, 0.18);
+      }
+      .topbar { display: flex; align-items: center; justify-content: space-between; padding-top: 1.25rem; padding-bottom: 0; transition: padding 0.25s ease; }
+      .navbar.solid .topbar { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+      .topbar nav a[aria-current='true'] { color: #fff; background: rgba(255, 255, 255, 0.14); }
+      /* Jumping to a section leaves its heading clear of the bar. */
+      section[id], .case, footer[id] { scroll-margin-top: 4.5rem; }
       .mark {
         display: grid;
         place-items: center;
@@ -207,7 +372,8 @@
         .topbar nav .nav-wide { display: none; }
       }
 
-      .hero-inner { position: relative; z-index: 1; padding-top: clamp(3.5rem, 9vw, 6.5rem); padding-bottom: clamp(7rem, 15vw, 11rem); }
+      /* The top padding includes the room the nav takes above it: 1.25rem over a 2.5rem mark. */
+      .hero-inner { position: relative; z-index: 1; padding-top: calc(3.75rem + clamp(3.5rem, 9vw, 6.5rem)); padding-bottom: clamp(7rem, 15vw, 11rem); }
       .hero-kicker {
         display: inline-block;
         margin: 0 0 1rem;
@@ -270,6 +436,8 @@
         overflow-wrap: anywhere;
       }
       .wx-plain { margin: 0; color: rgba(255, 255, 255, 0.8); }
+      /* Its line is held empty until the report arrives, so the card doesn't grow and push the page down. */
+      .wx-sky { min-height: 1.4em; margin: 0.45rem 0 0; font-size: 0.8rem; color: rgba(255, 255, 255, 0.68); }
       .wx-plain a { color: var(--sun); font-weight: 700; text-decoration: none; white-space: nowrap; }
       .wx-plain a:hover { text-decoration: underline; }
       /* On a wide screen the route starts behind the card, which then stands in for the CYTZ waypoint. */
@@ -317,7 +485,12 @@
         overflow: hidden;
       }
       @media (min-width: 860px) { .numbers { grid-template-columns: repeat(4, 1fr); } }
-      .numbers li { padding: 1.2rem 1.25rem 1.3rem; border-top: 1px solid var(--line); border-left: 1px solid var(--line); margin: -1px 0 0 -1px; }
+      .numbers li { border-top: 1px solid var(--line); border-left: 1px solid var(--line); margin: -1px 0 0 -1px; }
+      /* Each number is a link down to the story behind it. */
+      .numbers a { position: relative; display: block; height: 100%; padding: 1.2rem 1.25rem 1.3rem; text-decoration: none; transition: background-color 0.2s ease; }
+      .numbers a::after { content: '↓'; position: absolute; top: 1rem; right: 1.1rem; font-weight: 700; color: var(--muted); opacity: 0.45; transition: opacity 0.2s ease, transform 0.2s ease; }
+      .numbers a:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+      .numbers a:hover::after, .numbers a:focus-visible::after { opacity: 1; transform: translateY(2px); color: var(--accent); }
       .numbers strong { display: block; font-size: clamp(1.9rem, 4.5vw, 2.6rem); line-height: 1.05; letter-spacing: -0.03em; font-weight: 800; color: var(--accent); }
       .numbers span { display: block; margin-top: 0.35rem; font-size: 0.88rem; line-height: 1.4; color: var(--muted); }
 
@@ -340,9 +513,33 @@
         height: 4px;
         background: linear-gradient(90deg, #14396b, #4b4a8f, #c8643f, #f0a057);
       }
-      .case .case-num { margin: 0; font-size: 2.1rem; line-height: 1; letter-spacing: -0.03em; font-weight: 800; color: var(--accent); }
-      .case-num small { margin-left: 0.4rem; font-size: 0.9rem; letter-spacing: 0; font-weight: 700; color: var(--muted); }
-      .case h3 { margin: 0.75rem 0 0.5rem; font-size: 1.25rem; letter-spacing: -0.015em; font-weight: 800; }
+      .case h3 { margin: 0.25rem 0 0.9rem; font-size: 1.25rem; letter-spacing: -0.015em; font-weight: 800; }
+
+      /* Before and after, drawn to scale: grey for before, the accent for after, the value at the end of the bar. */
+      .ba { --k: 0.72; margin: 0 0 1.1rem; padding: 0.85rem 1rem 0.9rem; border-radius: 12px; background: color-mix(in srgb, var(--line) 35%, transparent); }
+      @media (max-width: 480px) { .ba { --k: 0.58; } }
+      .ba figcaption { margin-bottom: 0.55rem; font-size: 0.78rem; font-weight: 700; color: var(--muted); }
+      .ba dl { display: grid; gap: 0.45rem; margin: 0; }
+      .ba dl > div { display: grid; grid-template-columns: 4.1rem 1fr; align-items: center; gap: 0.6rem; }
+      .ba dt { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+      .ba dd { display: flex; align-items: center; gap: 0.5rem; margin: 0; min-width: 0; }
+      .ba .bar {
+        width: calc(var(--w) * var(--k));
+        min-width: 3px;
+        height: 10px;
+        border-radius: 0 4px 4px 0;
+        background: color-mix(in srgb, var(--muted) 70%, var(--surface));
+        transform-origin: left;
+      }
+      .ba .after .bar { background: var(--accent); }
+      .ba .val { flex: none; white-space: nowrap; font-size: 0.88rem; font-weight: 700; color: var(--muted); }
+      .ba .after .val { color: var(--ink); }
+      /* The bars grow the first time they scroll into view, after first. */
+      @media (prefers-reduced-motion: no-preference) {
+        .ba .bar { transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1); }
+        .ba .after .bar { transition-delay: 0.3s; }
+        .ba.pending .bar { transform: scaleX(0); }
+      }
       .case p { margin: 0 0 0.75rem; color: var(--muted); }
       .case .result { margin: 0; color: var(--ink); font-weight: 600; }
 
@@ -365,7 +562,7 @@
       .more:hover { text-decoration: underline; }
 
       /* Now */
-      .now { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; max-width: 46rem; }
+      .now { display: grid; gap: 0; margin: 1.5rem 0 0; padding: 0; list-style: none; max-width: 46rem; }
       .now li { display: grid; gap: 0.15rem 1.5rem; padding: 0.9rem 0; border-top: 1px solid var(--line); }
       .now li:last-child { border-bottom: 1px solid var(--line); }
       @media (min-width: 640px) { .now li { grid-template-columns: 7rem 1fr; } }
@@ -489,6 +686,7 @@
       .contact p { margin: 0.6rem 0 1.75rem; color: rgba(255, 255, 255, 0.85); max-width: 32rem; }
       .contact .kicker { color: var(--sun); }
       .socials { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+      .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
       .contact .fine {
         max-width: none;
         margin-top: 3rem;
@@ -501,7 +699,21 @@
   </head>
   <body>
     <header class="hero">
+      <div class="navbar" id="navbar">
+        <div class="wrap topbar">
+          <a class="mark" href="/" aria-label="Berk Yilmaz, home">BY</a>
+          <nav aria-label="Sections">
+            <a href="#work">Work</a>
+            <a class="nav-wide" href="#experience">Experience</a>
+            <a href="#projects">Projects</a>
+            <a class="nav-wide" href="#about">About</a>
+            <a class="nav-cta" href="/resume.pdf">Résumé</a>
+          </nav>
+        </div>
+      </div>
+
       <div class="sun" aria-hidden="true"></div>
+      <div class="clouds" id="clouds" aria-hidden="true"></div>
       <svg class="route" viewBox="0 0 760 420" preserveAspectRatio="xMaxYMid meet" aria-hidden="true">
         <path class="track" d="M40 370 C 260 370, 400 150, 680 92" />
         <circle class="wpt" cx="40" cy="370" r="8" />
@@ -518,17 +730,6 @@
         <path class="near" d="M0 112C240 84 420 96 640 108S1060 82 1240 100S1400 104 1440 98V140H0Z" />
       </svg>
 
-      <div class="wrap topbar">
-        <a class="mark" href="/" aria-label="Berk Yilmaz, home">BY</a>
-        <nav aria-label="Sections">
-          <a href="#work">Work</a>
-          <a class="nav-wide" href="#experience">Experience</a>
-          <a href="#projects">Projects</a>
-          <a class="nav-wide" href="#about">About</a>
-          <a class="nav-cta" href="/resume.pdf">Résumé</a>
-        </nav>
-      </div>
-
       <div class="wrap hero-inner">
         <p class="hero-kicker">Software developer · Private pilot · Toronto</p>
         <h1>Berk Yilmaz</h1>
@@ -538,9 +739,9 @@
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5M9 13h6M9 17h6" /></svg>
             Résumé (PDF)
           </a>
-          <a class="btn btn-glass" href="mailto:contact@nberkyilmaz.com">
+          <a class="btn btn-glass" href="mailto:contact@nberkyilmaz.com" data-copy="contact@nberkyilmaz.com">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>
-            Email me
+            <span data-label>Email me</span>
           </a>
         </div>
 
@@ -553,6 +754,7 @@
           </div>
           <p class="wx-raw" data-wx="raw"></p>
           <p class="wx-plain"><span data-wx="plain"></span> <a href="/departure-brief/">Brief a flight in Departure Brief →</a></p>
+          <p class="wx-sky" data-wx="sky"></p>
         </div>
       </div>
     </header>
@@ -560,10 +762,10 @@
     <main>
       <div class="wrap">
         <ul class="numbers" aria-label="By the numbers">
-          <li><strong>107×</strong><span>faster ministry data export: 12.8 hours to 7.2 minutes</span></li>
-          <li><strong>8,041</strong><span>students online at once in a load test, with zero server errors</span></li>
-          <li><strong>6</strong><span>Canadian jurisdictions whose exam platforms I load test</span></li>
-          <li><strong>50×</strong><span>less alert noise: 3,253 production alerts traced to 65 bugs</span></li>
+          <li><a href="#export"><strong>107×</strong><span>faster ministry data export: 12.8 hours to 7.2 minutes</span></a></li>
+          <li><a href="#method"><strong>8,041</strong><span>students online at once in a load test, with zero server errors</span></a></li>
+          <li><a href="#experience"><strong>6</strong><span>Canadian jurisdictions whose exam platforms I load test</span></a></li>
+          <li><a href="#alerts"><strong>50×</strong><span>less alert noise: 3,253 production alerts traced to 65 bugs</span></a></li>
         </ul>
       </div>
 
@@ -577,8 +779,14 @@
 
         <div class="cases">
           <article class="case" id="export">
-            <p class="case-num">107×<small>faster</small></p>
             <h3>The 12.8-hour export</h3>
+            <figure class="ba">
+              <figcaption>How long the export ran</figcaption>
+              <dl>
+                <div><dt>Before</dt><dd><span class="bar" style="--w: 100%"></span><span class="val">12.8 hours</span></dd></div>
+                <div class="after"><dt>After</dt><dd><span class="bar" style="--w: 0.94%"></span><span class="val">7.2 minutes</span></dd></div>
+              </dl>
+            </figure>
             <p>
               A ministry data export took 12.8 hours at province scale. Rather than pay for another run, I rebuilt the one that had already
               happened from 229,530 S3 object timestamps, and found one cross-region S3 write per student, to a bucket nothing read.
@@ -587,8 +795,14 @@
           </article>
 
           <article class="case" id="sizing">
-            <p class="case-num">2 sizes<small>smaller database</small></p>
             <h3>Right-sizing a production database</h3>
+            <figure class="ba">
+              <figcaption>Database instance size</figcaption>
+              <dl>
+                <div><dt>Planned</dt><dd><span class="bar" style="--w: 100%"></span><span class="val">8xlarge</span></dd></div>
+                <div class="after"><dt>Chosen</dt><dd><span class="bar" style="--w: 50%"></span><span class="val">4xlarge</span></dd></div>
+              </dl>
+            </figure>
             <p>
               The plan called for an 8xlarge database. Under three times production load, the 4xlarge peaked at 25.8% CPU, while the API tier
               the plan held flat would have run near 50%. The earlier 8xlarge figure turned out to come from a cold-cache measurement.
@@ -597,8 +811,14 @@
           </article>
 
           <article class="case" id="alerts">
-            <p class="case-num">50×<small>less alert noise</small></p>
             <h3>3,253 alerts, 65 bugs</h3>
+            <figure class="ba">
+              <figcaption>What the team gets for the same errors</figcaption>
+              <dl>
+                <div><dt>Before</dt><dd><span class="bar" style="--w: 100%"></span><span class="val">3,253 alerts</span></dd></div>
+                <div class="after"><dt>After</dt><dd><span class="bar" style="--w: 2%"></span><span class="val">65 issues</span></dd></div>
+              </dl>
+            </figure>
             <p>
               Production errors arrived as a flood of duplicate alerts. I built a serverless pipeline: a Lambda reads load-balancer logs as they
               land in S3, joins each failed request to its stack trace by X-Ray trace ID through Athena, and fingerprints it in DynamoDB.
@@ -607,11 +827,17 @@
           </article>
 
           <article class="case" id="method">
-            <p class="case-num">92.3%<small>of real traffic reproduced</small></p>
             <h3>Load tests that match production</h3>
+            <figure class="ba">
+              <figcaption>Share of real production traffic the test reproduces</figcaption>
+              <dl>
+                <div><dt>Before</dt><dd><span class="bar" style="--w: 39.9%"></span><span class="val">39.9%</span></dd></div>
+                <div class="after"><dt>After</dt><dd><span class="bar" style="--w: 92.3%"></span><span class="val">92.3%</span></dd></div>
+              </dl>
+            </figure>
             <p>
               A load test is only as good as the traffic it sends. Mine start from a measured production peak hour, modelled endpoint by
-              endpoint, which took coverage of real traffic from 39.9% to 92.3%.
+              endpoint. In one stress test at three times production load, 8,041 students were online at once, with zero server errors.
             </p>
             <p class="result">Every number I report is reconciled against the load balancer: across 9.23 million requests in one test, k6 and the load balancer differed by 19 requests, each one explained.</p>
           </article>
@@ -690,7 +916,7 @@
               </p>
               <ul class="stats">
                 <li><strong>5</strong> live weather feeds through a Cloudflare Worker</li>
-                <li><strong>899</strong> automated tests in CI</li>
+                <li><strong>1,000+</strong> automated tests in CI</li>
               </ul>
               <ul class="chips" aria-label="Built with">
                 <li>TypeScript</li>
@@ -748,9 +974,8 @@
         <div class="about">
           <div class="bio">
             <p>
-              As a Software Developer at Vretta, I help keep our assessment platform fast, secure, and reliable when thousands of students log in to
-              write an exam at the same time. I love the detective work behind it: load testing, digging through logs, and tracing a slowdown back to
-              its root cause. Knowing a student's big day goes smoothly because of that work is what motivates me most.
+              What I love about my work is the detective part: load testing, digging through logs, and tracing a slowdown back to its root cause.
+              Knowing a student's big day goes smoothly because of that work is what motivates me most.
             </p>
             <p>
               Away from work, my favourite place is the cockpit. I'm a private pilot flying a Cessna 172, and nothing clears my head like a calm
@@ -759,10 +984,6 @@
             </p>
           </div>
           <ul class="facts">
-            <li>
-              <span class="icon-wrap"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18" /></svg></span>
-              <div><strong>Software Developer, Vretta</strong><span>Assessment platforms in 6 Canadian jurisdictions</span></div>
-            </li>
             <li>
               <span class="icon-wrap"><svg class="icon" viewBox="-18 -14 36 28" fill="currentColor" aria-hidden="true"><path d="M17 0C17-1.6 15.6-2.4 14-2.4H4.5L-3.5-13H-7L-3-2.4H-11L-14-6.5H-17L-15 0L-17 6.5H-14L-11 2.4H-3L-7 13H-3.5L4.5 2.4H14C15.6 2.4 17 1.6 17 0Z" /></svg></span>
               <div><strong>Private Pilot Licence</strong><span>Transport Canada · flies a Cessna 172</span></div>
@@ -776,9 +997,8 @@
       </section>
 
       <section id="now" class="section wrap" aria-labelledby="now-title">
-        <p class="kicker">Now · October 2026</p>
+        <p class="kicker">Now<span id="now-month"></span></p>
         <h2 id="now-title">What I'm working on</h2>
-        <p class="section-lede">Updated every month or so.</p>
         <ul class="now">
           <li><strong>Work</strong><span>Load testing and performance engineering for provincial assessment platforms at Vretta.</span></li>
           <li><strong>Studying</strong><span>AWS Certified Solutions Architect – Associate.</span></li>
@@ -794,9 +1014,9 @@
         <h2>Let's talk</h2>
         <p>Email is the quickest way to reach me. I'm also on GitHub and LinkedIn.</p>
         <div class="socials">
-          <a class="btn btn-sun" href="mailto:contact@nberkyilmaz.com">
+          <a class="btn btn-sun" href="mailto:contact@nberkyilmaz.com" data-copy="contact@nberkyilmaz.com">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>
-            contact@nberkyilmaz.com
+            <span data-label>contact@nberkyilmaz.com</span>
           </a>
           <a class="btn btn-glass" href="/resume.pdf">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5M9 13h6M9 17h6" /></svg>
@@ -811,9 +1031,86 @@
             LinkedIn
           </a>
         </div>
-        <p class="fine">© 2026 Berk Yilmaz</p>
+        <p class="fine">© <span id="year">2026</span> Berk Yilmaz</p>
+        <p class="sr-only" id="copied" aria-live="polite"></p>
       </div>
     </footer>
+
+    <script>
+      // The month on "Now" and the year in the footer are today's, so neither needs editing by hand.
+      // Without JavaScript the heading reads just "Now".
+      (() => {
+        const today = new Date();
+        document.getElementById('now-month').textContent = ` · ${today.toLocaleString('en-CA', { month: 'long', year: 'numeric' })}`;
+        document.getElementById('year').textContent = today.getFullYear();
+      })();
+
+      // The nav gets its strip of night sky once the page moves, and marks the section in the middle of the screen.
+      (() => {
+        const navbar = document.getElementById('navbar');
+        const solid = () => navbar.classList.toggle('solid', window.scrollY > 16);
+        addEventListener('scroll', solid, { passive: true });
+        solid();
+
+        const links = [...navbar.querySelectorAll('nav a[href^="#"]')];
+        const watch = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              for (const link of links) {
+                if (link.hash === `#${entry.target.id}`) link.setAttribute('aria-current', 'true');
+                else link.removeAttribute('aria-current');
+              }
+            }
+          },
+          { rootMargin: '-45% 0px -50% 0px' },
+        );
+        document.querySelectorAll('.hero, main section[id], footer').forEach((el) => watch.observe(el));
+      })();
+
+      // An email button also copies the address, for anyone whose computer has no mail app to open.
+      (() => {
+        const status = document.getElementById('copied');
+        for (const link of document.querySelectorAll('[data-copy]')) {
+          const label = link.querySelector('[data-label]');
+          const text = label.textContent;
+          let reset;
+          link.addEventListener('click', () => {
+            navigator.clipboard?.writeText(link.dataset.copy).then(
+              () => {
+                label.textContent = 'Address copied';
+                status.textContent = `${link.dataset.copy} copied to the clipboard.`;
+                clearTimeout(reset);
+                reset = setTimeout(() => {
+                  label.textContent = text;
+                  status.textContent = '';
+                }, 2500);
+              },
+              () => {},
+            );
+          });
+        }
+      })();
+
+      // The before-and-after bars grow the first time they come into view.
+      (() => {
+        if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+        const grow = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              entry.target.classList.remove('pending');
+              grow.unobserve(entry.target);
+            }
+          },
+          { rootMargin: '0px 0px -15% 0px' },
+        );
+        for (const figure of document.querySelectorAll('.ba')) {
+          figure.classList.add('pending');
+          grow.observe(figure);
+        }
+      })();
+    </script>
 
     <script>
       // Toronto Island's latest METAR, through Departure Brief's relay. If it doesn't answer, or the report
@@ -823,6 +1120,48 @@
         const card = document.getElementById('wx');
         const field = (name) => card.querySelector(`[data-wx="${name}"]`);
         const fail = () => card.remove();
+
+        // The reported cloud, drawn into the sky: a few puffs for FEW, more for SCT and BKN, and a veil as well
+        // for OVC. The higher a layer's base, the higher it sits, and it drifts with the wind's east-west part.
+        // Seeded by the report's time, so one report always draws the same sky.
+        const COVER = { FEW: [2, 'a few clouds'], SCT: [4, 'scattered cloud'], BKN: [6, 'broken cloud'], OVC: [7, 'overcast'] };
+        const drawSky = (m) => {
+          const sky = document.getElementById('clouds');
+          const layers = (m.clouds ?? []).filter((c) => COVER[c.cover] && Number.isFinite(c.base));
+          let seed = (Math.abs(m.obsTime | 0) % 2147483646) + 1;
+          const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+          const crossing = m.wdir === 'VRB' ? m.wspd : m.wspd * Math.abs(Math.sin((m.wdir * Math.PI) / 180));
+          const seconds = Math.min(600, Math.max(60, 2400 / crossing));
+          if (crossing > 0) sky.classList.add('drift');
+          if (Math.sin((m.wdir * Math.PI) / 180) > 0) sky.classList.add('from-east');
+
+          layers.forEach((layer, i) => {
+            const [count] = COVER[layer.cover];
+            const height = 58 - (Math.min(layer.base, 12000) / 12000) * 46;
+            const dur = seconds * (1 - i * 0.12);
+            for (let j = 0; j < count; j++) {
+              const along = (j + rand() * 0.8) / count;
+              const cloud = document.createElement('span');
+              cloud.className = 'cloud';
+              cloud.style.setProperty('--y', `${(height + (rand() - 0.5) * 10).toFixed(1)}%`);
+              cloud.style.setProperty('--s', (0.55 + rand() * 0.5 + (layer.cover === 'OVC' ? 0.3 : 0)).toFixed(2));
+              cloud.style.setProperty('--left', `${(along * 110 - 10).toFixed(1)}%`);
+              cloud.style.setProperty('--dur', `${dur.toFixed(0)}s`);
+              cloud.style.setProperty('--delay', `${(-along * dur).toFixed(0)}s`);
+              sky.append(cloud);
+            }
+          });
+
+          const densest = layers.reduce((a, c) => (!a || COVER[c.cover][0] > COVER[a.cover][0] ? c : a), null);
+          if (densest?.cover === 'OVC') sky.classList.add('overcast');
+          if (densest?.cover === 'BKN') sky.classList.add('broken');
+          sky.classList.add('shown');
+
+          const when = document.documentElement.dataset.skyLabel;
+          const what = densest ? `${COVER[densest.cover][1]} at ${densest.base.toLocaleString('en-CA')} ft` : 'no cloud reported';
+          field('sky').textContent = `The sky on this page is Toronto's right now: ${when ? `${when}, ` : ''}${what}.`;
+        };
 
         fetch(`${RELAY}/awc/metar?ids=CYTZ&format=json`)
           .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`relay answered ${res.status}`))))
@@ -853,6 +1192,7 @@
               .filter(Boolean)
               .join(' · ') + '.';
             document.querySelector('.hero').classList.add('has-wx');
+            drawSky(m);
           })
           .catch(fail);
       })();
