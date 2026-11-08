@@ -23,7 +23,7 @@ The page is plain HTML with no build step.
 
 ## The résumé
 
-`resume.pdf`, served at <https://nberkyilmaz.com/resume.pdf>, is a copy of `out/resume.pdf` from the
+`resume.pdf`, served at <https://nberkyilmaz.com/resume.pdf>, is a copy of `out/generic/resume.pdf` from the
 private `resume` repository: the build of `resume.tex`, which has no phone number. Copy it again
 whenever the résumé changes. Never copy `Berk_Yilmaz_Resume.pdf`, the version for applying, which
 has the phone number.
