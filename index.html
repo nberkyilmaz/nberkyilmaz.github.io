@@ -762,10 +762,10 @@
     <main>
       <div class="wrap">
         <ul class="numbers" aria-label="By the numbers">
-          <li><a href="#export"><strong>107×</strong><span>faster ministry data export: 12.8 hours to 7.2 minutes</span></a></li>
-          <li><a href="#method"><strong>8,041</strong><span>students online at once in a load test, with zero server errors</span></a></li>
-          <li><a href="#experience"><strong>6</strong><span>Canadian jurisdictions whose exam platforms I load test</span></a></li>
-          <li><a href="#alerts"><strong>50×</strong><span>less alert noise: 3,253 production alerts traced to 65 bugs</span></a></li>
+          <li><a href="#experience"><strong>195,000+</strong><span>students across 4 provinces on the exam platforms I load test</span></a></li>
+          <li><a href="#sizing"><strong>26–32%</strong><span>estimated cut in planned infrastructure cost for two exam periods</span></a></li>
+          <li><a href="#method"><strong>60→92%</strong><span>of production traffic covered by load tests on a provincial program</span></a></li>
+          <li><a href="#privacy"><strong>177,130</strong><span>student IDs and birth dates kept out of test data</span></a></li>
         </ul>
       </div>
 
@@ -773,25 +773,25 @@
         <p class="kicker">Selected work</p>
         <h2 id="work-title">Finding out why it's slow, and proving it</h2>
         <p class="section-lede">
-          At Vretta I lead load testing for the platforms provinces run their exams on, from production traffic analysis to the report the client
-          signs off. Four pieces of that work, with the numbers behind them.
+          At Vretta I lead load testing for the platforms provinces run their exams on, from building the test environment to the report the client
+          receives. Four pieces of that work, with the numbers behind them.
         </p>
 
         <div class="cases">
-          <article class="case" id="export">
-            <h3>The 12.8-hour export</h3>
+          <article class="case" id="capacity">
+            <h3>A sizing rule that matched production</h3>
             <figure class="ba">
-              <figcaption>How long the export ran</figcaption>
+              <figcaption>Requests a second per API server at 30% CPU</figcaption>
               <dl>
-                <div><dt>Before</dt><dd><span class="bar" style="--w: 100%"></span><span class="val">12.8 hours</span></dd></div>
-                <div class="after"><dt>After</dt><dd><span class="bar" style="--w: 0.94%"></span><span class="val">7.2 minutes</span></dd></div>
+                <div><dt>Test</dt><dd><span class="bar" style="--w: 99%"></span><span class="val">98</span></dd></div>
+                <div class="after"><dt>Live</dt><dd><span class="bar" style="--w: 100%"></span><span class="val">99</span></dd></div>
               </dl>
             </figure>
             <p>
-              A ministry data export took 12.8 hours at province scale. Rather than pay for another run, I rebuilt the one that had already
-              happened from 229,530 S3 object timestamps, and found one cross-region S3 write per student, to a bucket nothing read.
+              How many API servers does an exam day need? From k6 and CloudWatch data I derived a simple rule: one server for every 1,000 students
+              a day. In testing, a server reached the 30% CPU line at 98 requests a second, and 2025 production worked out to 99.
             </p>
-            <p class="result">Removing it took the export to 7.2 minutes, and the cost per row fell 99×.</p>
+            <p class="result">Production then ran 12,800 students a day on 15 servers, with peak-hour CPU under 20%.</p>
           </article>
 
           <article class="case" id="sizing">
@@ -804,26 +804,26 @@
               </dl>
             </figure>
             <p>
-              The plan called for an 8xlarge database. Under three times production load, the 4xlarge peaked at 25.8% CPU, while the API tier
-              the plan held flat would have run near 50%. The earlier 8xlarge figure turned out to come from a cold-cache measurement.
+              The plan called for an 8xlarge RDS database. Benchmarking RDS and EC2 configurations under load, the 4xlarge held at 25.8% CPU in
+              the stress test, while the API servers were forecast to reach 49 to 56%.
             </p>
-            <p class="result">I recommended the smaller database and moving the spend to the API tier. Management approved it.</p>
+            <p class="result">I recommended half the planned database and more API servers where they were needed, cutting planned infrastructure cost for two exam periods by an estimated 26 to 32%.</p>
           </article>
 
-          <article class="case" id="alerts">
-            <h3>3,253 alerts, 65 bugs</h3>
+          <article class="case" id="privacy">
+            <h3>Test data with no real students in it</h3>
             <figure class="ba">
-              <figcaption>What the team gets for the same errors</figcaption>
+              <figcaption>Student IDs and birth dates left unmasked in a test copy</figcaption>
               <dl>
-                <div><dt>Before</dt><dd><span class="bar" style="--w: 100%"></span><span class="val">3,253 alerts</span></dd></div>
-                <div class="after"><dt>After</dt><dd><span class="bar" style="--w: 2%"></span><span class="val">65 issues</span></dd></div>
+                <div><dt>Old</dt><dd><span class="bar" style="--w: 100%"></span><span class="val">177,130</span></dd></div>
+                <div class="after"><dt>New</dt><dd><span class="bar" style="--w: 0.6%"></span><span class="val">0</span></dd></div>
               </dl>
             </figure>
             <p>
-              Production errors arrived as a flood of duplicate alerts. I built a serverless pipeline: a Lambda reads load-balancer logs as they
-              land in S3, joins each failed request to its stack trace by X-Ray trace ID through Athena, and fingerprints it in DynamoDB.
+              Realistic load tests need a copy of production with every trace of real students removed. I proved the existing data-masking script
+              would have left 177,130 student IDs and birth dates in place, and wrote its replacement.
             </p>
-            <p class="result">Each real bug now opens one GitLab issue, across 11 tenants in 2 regions under data-residency rules.</p>
+            <p class="result">All 16 verification checks on the masked copy read zero.</p>
           </article>
 
           <article class="case" id="method">
@@ -831,15 +831,16 @@
             <figure class="ba">
               <figcaption>Share of real production traffic the test reproduces</figcaption>
               <dl>
-                <div><dt>Before</dt><dd><span class="bar" style="--w: 39.9%"></span><span class="val">39.9%</span></dd></div>
+                <div><dt>Before</dt><dd><span class="bar" style="--w: 60.1%"></span><span class="val">60.1%</span></dd></div>
                 <div class="after"><dt>After</dt><dd><span class="bar" style="--w: 92.3%"></span><span class="val">92.3%</span></dd></div>
               </dl>
             </figure>
             <p>
-              A load test is only as good as the traffic it sends. Mine start from a measured production peak hour, modelled endpoint by
-              endpoint. In one stress test at three times production load, 8,041 students were online at once, with zero server errors.
+              A load test is only as good as the traffic it sends. I record real student flows, then check each API payload against production,
+              because a 200 can be empty and still look like a pass. In one stress test, 8,000 students were online at once across the API,
+              WebSocket, Redis and database layers.
             </p>
-            <p class="result">Every number I report is reconciled against the load balancer: across 9.23 million requests in one test, k6 and the load balancer differed by 19 requests, each one explained.</p>
+            <p class="result">Coverage of real traffic rose from 60% to 92% on a provincial program, and testing showed 16% of exam starts failing at 5× production's login rate.</p>
           </article>
         </div>
       </section>
@@ -855,17 +856,21 @@
             <div>
               <h3><a href="https://www.vretta.com/">Software Developer <span class="org">· Vretta ↗</span></a></h3>
               <p>
-                Online assessment platforms for provincial ministries. I lead load testing across 6 Canadian jurisdictions, built the
-                error-alerting pipeline, and closed privilege-escalation gaps in a provincial admin portal as its sole developer.
+                Online assessment platforms for provincial ministries. I lead performance testing across 4 provinces and work across the whole
+                system: test environments built from production snapshots, the Node.js and Feathers.js APIs, the Angular client, WebSockets, Redis and
+                AWS infrastructure. I also built out the production error-alerting pipeline to 2 more provinces.
               </p>
               <ul class="chips" aria-label="Worked with">
                 <li>k6</li>
                 <li>AWS EKS</li>
+                <li>AWS RDS</li>
                 <li>Lambda</li>
                 <li>Athena</li>
                 <li>DynamoDB</li>
                 <li>CloudWatch</li>
+                <li>Redis</li>
                 <li>Node.js</li>
+                <li>Feathers.js</li>
                 <li>Angular</li>
                 <li>GitLab CI</li>
               </ul>
@@ -876,10 +881,11 @@
             <div>
               <h3>Full-Stack Web Developer <span class="org">· Expense Trend (contract)</span></h3>
               <p>
-                Replaced a manual configuration process with a documented REST API, and designed the schema and persistence layer for synced
-                bank accounts, institutions and credentials.
+                Integrated Plaid, MX and Mastercard bank APIs after their vendor reviews, connecting users of an iOS budgeting app to 100+ Canadian
+                financial institutions, and built documented REST endpoints for community profiles and bank status.
               </p>
               <ul class="chips" aria-label="Worked with">
+                <li>Plaid</li>
                 <li>Node.js</li>
                 <li>OpenAPI</li>
                 <li>MSSQL</li>
@@ -887,7 +893,7 @@
             </div>
           </li>
           <li class="job">
-            <p class="when">2020 – 2024</p>
+            <p class="when">Education</p>
             <div>
               <h3>Honours BSc, Computer Science <span class="org">· Wilfrid Laurier University</span></h3>
               <p>Data structures and algorithms, databases, operating systems, machine learning and software engineering.</p>
@@ -915,8 +921,8 @@
                 when you'll be there, and checks it against your own minimums, citing the report behind every line.
               </p>
               <ul class="stats">
-                <li><strong>5</strong> live weather feeds through a Cloudflare Worker</li>
-                <li><strong>1,000+</strong> automated tests in CI</li>
+                <li><strong>5</strong> public aviation data sources</li>
+                <li><strong>899</strong> automated tests in CI</li>
               </ul>
               <ul class="chips" aria-label="Built with">
                 <li>TypeScript</li>
